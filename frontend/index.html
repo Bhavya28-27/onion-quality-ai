@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Onion Quality AI — AI-Assisted Onion Quality Inspection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Clean Top Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C7 2 3 7 3 13a9 9 0 0 0 18 0c0-6-4-11-9-11z"></path>
+            <path d="M12 2v5"></path>
+            <path d="M9 13a3 3 0 0 0 6 0"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">ONION QUALITY AI</h1>
+          <p class="brand-subtitle">AI-assisted, transparent and consistent onion quality assessment.</p>
+        </div>
+      </div>
+      <div class="header-notice">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>AI-assisted assessment. Final quality decisions should be verified where required.</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+
+    <!-- UPLOAD & INSPECTION CONTROLS (FOCUSED MAIN CARD) -->
+    <section class="card intake-card" id="intakeSection">
+      <div class="intake-grid">
+        <!-- Section 1: Upload Card -->
+        <div class="intake-upload-col">
+          <div class="section-heading">
+            <h2>Upload Onion Lot Image</h2>
+            <p>Upload a clear photo of the onion lot for visual quality inspection.</p>
+          </div>
+
+          <!-- Drag & Drop Zone -->
+          <div class="drop-zone" id="dropZone">
+            <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg" class="file-input" />
+            <div class="drop-prompt" id="dropPrompt">
+              <div class="drop-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <p class="drop-primary">Drag &amp; drop lot image here, or <span class="browse-link">Browse image</span></p>
+              <p class="drop-secondary">Supported formats: JPG, JPEG, PNG</p>
+              <div class="marker-pill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                No reference marker required
+              </div>
+            </div>
+
+            <!-- Selected File Badge -->
+            <div class="file-selected-box" id="fileChosenInfo" style="display: none;">
+              <div class="file-info-text">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <div>
+                  <strong id="chosenFileName">lot_image.jpeg</strong>
+                  <span class="file-change-hint">Click or drop new image to change</span>
+                </div>
+              </div>
+              <button type="button" class="btn-clear-file" id="btnRemoveFile" title="Remove image">&times;</button>
+            </div>
+          </div>
+
+          <!-- Sample Lots Selector -->
+          <div class="sample-selection-area">
+            <span class="sample-label">Or try a sample:</span>
+            <div class="sample-buttons">
+              <button type="button" class="btn-sample" data-sample="sample_lot_1.jpeg">Good Lot</button>
+              <button type="button" class="btn-sample" data-sample="sample_lot_2_rotten.jpeg">Rotten Lot</button>
+              <button type="button" class="btn-sample" data-sample="sample_lot_3.jpg">Multi-Lot</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Inspection Settings & Action -->
+        <div class="intake-settings-col">
+          <div class="section-heading">
+            <h2>Inspection Settings</h2>
+            <p>Select grading standard for automatic compliance evaluation.</p>
+          </div>
+
+          <div class="settings-form">
+            <div class="form-group">
+              <label for="standardSelect" class="input-label">Grading Standard</label>
+              <select id="standardSelect" class="form-select">
+                <option value="procurement_trial" selected>SIH Procurement Trial (Configurable trial profile)</option>
+                <option value="local_market">NHB Local Market Size Categories (Size / visible-defect assessment)</option>
+                <option value="nhb_nasik">NHB Export – Nasik / Bellary (Size / visible-defect assessment)</option>
+                <option value="nhb_bangalore">NHB Export – Bangalore Rose (Size / visible-defect assessment)</option>
+                <option value="nhb_krishnapuram">NHB Export – Krishnapuram (Size / visible-defect assessment)</option>
+              </select>
+              <p class="select-desc" id="standardDesc">
+                SIH demonstration profile. Configurable visual grading criteria for Grade A and URS classification based on surface defect absence and relative sizing.
+              </p>
+            </div>
+
+            <!-- Preview Thumbnail if selected -->
+            <div class="thumbnail-preview-card" id="thumbCard" style="display: none;">
+              <span class="thumb-label">Selected Lot Preview</span>
+              <img id="thumbImg" src="" alt="Lot Preview" class="thumb-image" />
+            </div>
+
+            <button type="button" class="btn-primary-action" id="btnAnalyze">
+              <span class="btn-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                Analyze Lot
+              </span>
+              <span class="btn-spinner" style="display: none;"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS DASHBOARD (SHOWN AFTER ANALYSIS) -->
+    <div id="resultsDashboard" style="display: none;">
+
+      <!-- SECTION 3: LOT QUALITY SUMMARY -->
+      <section class="results-header-section">
+        <div class="results-title-row">
+          <div>
+            <h2 class="results-heading">LOT QUALITY SUMMARY</h2>
+            <p class="results-subheading" id="inspectedStandardName">Standard: SIH Procurement Trial (Configurable Trial Profile)</p>
+            <p class="results-subnote">Grade A / URS values are calculated using the selected procurement grading profile.</p>
+          </div>
+          <button type="button" class="btn-generate-report" id="btnOpenReport">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            Generate Report
+          </button>
+        </div>
+
+        <!-- Empty detection banner if 0 onions detected -->
+        <div class="no-onions-alert" id="noOnionsAlert" style="display: none;">
+          <div class="no-onions-content">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+              <strong id="noOnionsTitle">No onions detected</strong>
+              <p id="noOnionsDesc">Try uploading a clearer image with onions clearly visible.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Top Cards for SIH: Total Onions, Grade A, URS, Defective / Reject -->
+        <div class="summary-cards-grid" id="gradingCardsGrid">
+          <div class="summary-card">
+            <span class="summary-label">Total Onions</span>
+            <div class="summary-num" id="cardTotalOnions">0</div>
+            <span class="summary-hint">Detected in lot image</span>
+          </div>
+
+          <div class="summary-card card-grade-a" id="boxGradeA">
+            <span class="summary-label">Grade A</span>
+            <div class="summary-num text-success" id="cardGradeA">--</div>
+            <span class="summary-hint" id="cardGradeASub">Sound standard quality</span>
+          </div>
+
+          <div class="summary-card card-urs" id="boxURS">
+            <span class="summary-label">URS</span>
+            <div class="summary-num text-warning" id="cardURS">--</div>
+            <span class="summary-hint" id="cardURSSub">Under Requisite Standard</span>
+          </div>
+
+          <div class="summary-card card-defective" id="boxDefective">
+            <span class="summary-label">Defective / Reject</span>
+            <div class="summary-num text-danger" id="cardDefective">--</div>
+            <span class="summary-hint" id="cardDefectiveSub">Rotten or sprouted</span>
+          </div>
+        </div>
+
+        <!-- When criteria are NOT configured for a standard, show explicit notice -->
+        <div class="unconfigured-criteria-notice" id="unconfiguredCriteriaNotice" style="display: none;">
+          <div class="unconfigured-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+              <strong>Grade A / URS calculation unavailable</strong>
+              <p id="unconfiguredCriteriaReason">This grading profile does not currently contain Grade A / URS criteria.</p>
+            </div>
+          </div>
+          <div class="unconfigured-body">
+            <span>Missing criteria required to compute Grade A and URS:</span>
+            <ul id="missingRequirementsList">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- VISIBLE QUALITY INDICATORS -->
+        <div class="defects-breakdown-card">
+          <div class="defects-header">
+            <h3>Visible Quality Indicators</h3>
+            <span class="defects-sub">Surface defect and sizing counts identified from visual inspection</span>
+          </div>
+          <div class="defects-grid-4">
+            <div class="defect-item item-rotten">
+              <div class="defect-indicator-dot dot-rotten"></div>
+              <div class="defect-info">
+                <span class="defect-title">Rotten</span>
+                <span class="defect-rate-tag" id="rateRotten">0 (0.0%)</span>
+              </div>
+              <div class="defect-count" id="countRotten">0</div>
+            </div>
+
+            <div class="defect-item item-sprout">
+              <div class="defect-indicator-dot dot-sprout"></div>
+              <div class="defect-info">
+                <span class="defect-title">Sprouted</span>
+                <span class="defect-rate-tag" id="rateSprout">0 (0.0%)</span>
+              </div>
+              <div class="defect-count" id="countSprout">0</div>
+            </div>
+
+            <div class="defect-item item-split">
+              <div class="defect-indicator-dot dot-split"></div>
+              <div class="defect-info">
+                <span class="defect-title">Damaged (Double Split)</span>
+                <span class="defect-rate-tag" id="rateSplit">0 (0.0%)</span>
+              </div>
+              <div class="defect-count" id="countSplit">0</div>
+            </div>
+
+            <div class="defect-item item-undersized">
+              <div class="defect-indicator-dot dot-undersized"></div>
+              <div class="defect-info">
+                <span class="defect-title">Undersized</span>
+                <span class="defect-rate-tag" id="rateUndersized">0 (0.0%)</span>
+              </div>
+              <div class="defect-count" id="countUndersized">0</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: VISUAL INSPECTION (IMAGE ANALYSIS) -->
+      <section class="card visual-inspection-card">
+        <div class="card-header-clean">
+          <div>
+            <h3>Visual Inspection</h3>
+            <p class="card-subtitle">Detected onions and visible quality indicators</p>
+          </div>
+          <div class="inspection-actions">
+            <div class="tab-pill-group">
+              <button type="button" class="tab-pill active" id="tabAnnotated">Annotated</button>
+              <button type="button" class="tab-pill" id="tabOriginal">Original</button>
+            </div>
+            <button type="button" class="btn-icon-subtle" id="btnEnlargeImage" title="View full-size image">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <polyline points="9 21 3 21 3 15"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+                <line x1="3" y1="21" x2="10" y2="14"></line>
+              </svg>
+              <span>Enlarge</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="image-viewer-container">
+          <img id="mainDisplayImg" src="" alt="Onion Inspection" class="annotated-main-img" />
+          
+          <div class="inspection-legend">
+            <span class="legend-chip"><span class="chip-color color-onion"></span> ONION</span>
+            <span class="legend-chip"><span class="chip-color color-rotten"></span> ROTTEN</span>
+            <span class="legend-chip"><span class="chip-color color-sprout"></span> SPROUT</span>
+            <span class="legend-chip"><span class="chip-color color-split"></span> DOUBLE SPLIT</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRADING BASIS SECTION (SIH EXPLAINABILITY) -->
+      <section class="card grading-basis-card" id="gradingBasisSection" style="display: none;">
+        <div class="card-header-clean">
+          <div>
+            <h3>Grading Basis</h3>
+            <p class="card-subtitle">Detailed criteria and observed results for each category</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="grading-basis-grid" id="gradingBasisGrid">
+            <!-- Dynamically populated from grading engine -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: WHY THIS HELPS (TRANSPARENCY & DISPUTE REDUCTION) -->
+      <section class="card why-this-helps-card">
+        <div class="card-header-clean">
+          <div>
+            <h3>Why This Helps: Reducing Dispute &amp; Increasing Transparency</h3>
+            <p class="card-subtitle">How objective AI-assisted inspection resolves mandi procurement inconsistencies</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="why-helps-grid">
+            <div class="why-helps-item">
+              <div class="why-helps-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <div class="why-helps-text">
+                <strong>Standardized Visual Rules</strong>
+                <p>Applies the exact same visual defect and sizing criteria to every lot, eliminating manual grader variance across centers.</p>
+              </div>
+            </div>
+
+            <div class="why-helps-item">
+              <div class="why-helps-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <div class="why-helps-text">
+                <strong>Transparent Segregation</strong>
+                <p>Separates sound Grade A produce from URS and defective bulbs with individual bounding boxes and verifiable evidence.</p>
+              </div>
+            </div>
+
+            <div class="why-helps-item">
+              <div class="why-helps-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+              </div>
+              <div class="why-helps-text">
+                <strong>Recorded Evidence for Disputes</strong>
+                <p>Provides an instant digital quality certificate that both farmers and procurement officers can reference to resolve pricing disagreements.</p>
+              </div>
+            </div>
+
+            <div class="why-helps-item">
+              <div class="why-helps-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <div class="why-helps-text">
+                <strong>Consistent Screening</strong>
+                <p>Offers immediate intake screening before manual cutting or secondary verification, speeding up procurement lines while protecting fair value.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7: ASSESSMENT BASIS (CONSISTENCY STATEMENT) -->
+      <section class="assessment-basis-card">
+        <div class="assessment-basis-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="assessment-basis-content">
+          <h4>Assessment Basis &amp; Consistency</h4>
+          <p id="assessmentBasisText">
+            This assessment is generated from image-based observations and the selected grading criteria. The same criteria are applied consistently to the detected onions to support transparent and repeatable assessment.
+          </p>
+        </div>
+      </section>
+
+      <!-- 2-COLUMN GRID: SIZE ASSESSMENT & STANDARDS ASSESSMENT -->
+      <div class="assessment-two-col">
+        <!-- SECTION 5: SIZE ASSESSMENT -->
+        <section class="card size-assessment-card">
+          <div class="card-header-clean">
+            <div>
+              <h3>Size Assessment</h3>
+              <p class="card-subtitle">Approximate image-based size</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="size-categories-list">
+              <div class="size-row">
+                <div class="size-row-header">
+                  <span class="size-badge badge-large">Large</span>
+                  <span class="size-count" id="countLarge">0 (0%)</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill fill-green" id="barLarge" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div class="size-row">
+                <div class="size-row-header">
+                  <span class="size-badge badge-medium">Medium</span>
+                  <span class="size-count" id="countMedium">0 (0%)</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill fill-blue" id="barMedium" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div class="size-row">
+                <div class="size-row-header">
+                  <span class="size-badge badge-small">Small</span>
+                  <span class="size-count" id="countSmall">0 (0%)</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill fill-amber" id="barSmall" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="size-note-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span>Physical diameter in millimeters cannot be reliably calculated without camera calibration or a known reference.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- STANDARDS ASSESSMENT -->
+        <section class="card standards-assessment-card">
+          <div class="card-header-clean">
+            <div>
+              <h3>Standards Assessment</h3>
+              <p class="card-subtitle" id="stdCardSubtitle">Evaluation against selected standard</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="std-details-list">
+              <div class="std-detail-item">
+                <span class="std-detail-label">Selected Standard</span>
+                <strong class="std-detail-value" id="stdNameVal">Mandi Procurement Assessment</strong>
+              </div>
+
+              <div class="std-detail-item">
+                <span class="std-detail-label">Assessment</span>
+                <span class="std-status-pill" id="stdStatusVal">Meets evaluated criteria</span>
+              </div>
+
+              <div class="std-detail-item">
+                <span class="std-detail-label">Reason</span>
+                <p class="std-reason-text" id="stdReasonVal">
+                  Visible surface defect indicators fall within allowable thresholds.
+                </p>
+              </div>
+            </div>
+
+            <!-- Clean Table of Evaluated Criteria -->
+            <div class="criteria-table-wrapper">
+              <table class="criteria-simple-table">
+                <thead>
+                  <tr>
+                    <th>Criteria</th>
+                    <th>Standard Threshold</th>
+                    <th>Observed</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="criteriaTableBody">
+                  <!-- Populated from rules_engine output -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- SECTION 8: LIMITATIONS & NOTES (COMPACT EXPANDABLE AT BOTTOM) -->
+    <details class="limitations-accordion">
+      <summary class="limitations-summary">
+        <span>Limitations &amp; Notes</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </summary>
+      <div class="limitations-content">
+        <ul class="limitations-concise-list">
+          <li>RGB images assess visible surface defects only; internal defects cannot be reliably determined.</li>
+          <li>Physical size in mm requires calibration or a known reference.</li>
+          <li>Image-based defect percentages are visual screening indicators and may not represent official weight-based calculations.</li>
+          <li>Final regulatory decisions may require human verification.</li>
+        </ul>
+      </div>
+    </details>
+
+  </main>
+
+  <!-- Clean Footer -->
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p>Onion Quality AI &bull; AI-Assisted Onion Quality Inspection</p>
+    </div>
+  </footer>
+
+  <!-- SECTION 8: DIGITAL QUALITY REPORT MODAL -->
+  <div class="modal-overlay" id="reportModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3>Digital Quality Inspection Report</h3>
+          <p class="modal-subtitle">AI-assisted visual lot assessment &bull; SIH Procurement Inspection</p>
+        </div>
+        <button type="button" class="btn-close-modal" id="btnCloseReport">&times;</button>
+      </div>
+
+      <div class="modal-body" id="printableReport">
+        <!-- Printable Certificate Content -->
+        <div class="report-meta-grid">
+          <div>
+            <span class="meta-label">Inspection Date &amp; Time</span>
+            <strong id="repDateTime">-</strong>
+          </div>
+          <div>
+            <span class="meta-label">Selected Grading Standard</span>
+            <strong id="repStandard">-</strong>
+          </div>
+          <div>
+            <span class="meta-label">Total Onions Assessed</span>
+            <strong id="repTotalAssessed">-</strong>
+          </div>
+        </div>
+
+        <div class="report-image-preview">
+          <img id="repImg" src="" alt="Report Lot Image" />
+        </div>
+
+        <!-- Grade A / URS Summary Section in Report -->
+        <div class="report-grading-section" id="repGradingSection">
+          <h4>Grading Summary (Grade A / URS / Reject)</h4>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Count</th>
+                <th>Percentage</th>
+                <th>Grading Criteria</th>
+              </tr>
+            </thead>
+            <tbody id="repGradingTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Visible Defects Table -->
+        <div class="report-defects-section">
+          <h4>Visible Quality Indicators</h4>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Indicator</th>
+                <th>Observed Count</th>
+                <th>Rate (%)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="repDefectsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="report-summary-block">
+          <h4>Assessment &amp; Plain-Language Explanation</h4>
+          <p id="repReasonText">-</p>
+        </div>
+
+        <div class="report-verification-note">
+          <strong>Verification Note:</strong> AI-assisted assessment. Final quality decisions should be verified where required. Weight-based criteria require integration with a physical weighing scale.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btnDownloadJson">Download JSON Data</button>
+        <button type="button" class="btn-primary-action" id="btnPrintReport">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Print / Save PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN IMAGE MODAL -->
+  <div class="modal-overlay" id="imageModal" style="display: none;">
+    <div class="image-modal-card">
+      <div class="image-modal-header">
+        <h4>Visual Inspection — Full View</h4>
+        <button type="button" class="btn-close-modal" id="btnCloseImageModal">&times;</button>
+      </div>
+      <div class="image-modal-body">
+        <img id="enlargedImg" src="" alt="Enlarged Inspection" />
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

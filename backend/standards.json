@@ -1,0 +1,117 @@
+{
+  "local_market": {
+    "id": "local_market",
+    "name": "NHB Local Market Size Categories",
+    "type": "size_classification",
+    "description": "Standard size and preliminary visual classification for Indian wholesale mandi trade.",
+    "decay_max_percent": 5.0,
+    "sprout_max_percent": 3.0,
+    "defective_limit_percent": 15.0,
+    "size_tiers": {
+      "extra_large": {"min_mm": 60, "label": "Extra Large (> 60 mm)"},
+      "large": {"min_mm": 45, "max_mm": 60, "label": "Large (45 - 60 mm)"},
+      "medium": {"min_mm": 35, "max_mm": 45, "label": "Medium (35 - 45 mm)"},
+      "small": {"min_mm": 20, "max_mm": 35, "label": "Small (20 - 35 mm)"}
+    },
+    "regulatory_note": "Local wholesale trade grades primarily on diameter sorting and visible soundness.",
+    "grading_criteria": {
+      "configured": false,
+      "missing_requirements": [
+        "Official mandi Grade A vs URS specifications (NHB local market standard defines size tiers Extra Large/Large/Medium/Small, not Grade A/URS)",
+        "Physical diameter calibration in mm (cannot be reliably verified from uncalibrated RGB pixels)",
+        "Lot weight data (NAFED/APMC procurement limits are based on weight percentages, not visual image count)"
+      ]
+    }
+  },
+  "nhb_nasik": {
+    "id": "nhb_nasik",
+    "name": "NHB Export - Nasik / Saurashtra / Bellary / Poona",
+    "type": "export_standard",
+    "description": "National Horticulture Board export standard for globe / round red onions from Maharashtra and Karnataka.",
+    "minimum_diameter_mm": 20.0,
+    "decay_max_percent": 2.0,
+    "sprout_max_percent": 0.0,
+    "double_split_max_percent": 5.0,
+    "defective_weight_limit_percent": 10.0,
+    "regulatory_note": "Weight-based regulatory criteria (10% total defect limit) require lot weight data or integration with a weighing system.",
+    "grading_criteria": {
+      "configured": false,
+      "missing_requirements": [
+        "Official export tender Grade A vs URS specifications (NHB export standards define Class I / Class II and decay limits, not Grade A/URS)",
+        "Physical diameter calibration in mm (required to certify minimum 20 mm export diameter)",
+        "Weight-based defect percentage measurement"
+      ]
+    }
+  },
+  "nhb_bangalore": {
+    "id": "nhb_bangalore",
+    "name": "NHB Export - Bangalore Rose",
+    "type": "export_standard",
+    "description": "National Horticulture Board export specification for Bangalore Rose pickled onion variety.",
+    "minimum_diameter_mm": 15.0,
+    "decay_max_percent": 2.0,
+    "sprout_max_percent": 0.0,
+    "double_split_max_percent": 3.0,
+    "defective_weight_limit_percent": 10.0,
+    "regulatory_note": "Smaller diameter requirement (min 15 mm) suited for pickled round rose onions.",
+    "grading_criteria": {
+      "configured": false,
+      "missing_requirements": [
+        "Official export tender Grade A vs URS specifications (NHB export standards define Class I / Class II, not Grade A/URS)",
+        "Physical diameter calibration in mm (required to certify minimum 15 mm diameter)",
+        "Weight-based defect percentage measurement"
+      ]
+    }
+  },
+  "nhb_krishnapuram": {
+    "id": "nhb_krishnapuram",
+    "name": "NHB Export - Krishnapuram",
+    "type": "export_standard",
+    "description": "National Horticulture Board export specification for Andhra Pradesh Krishnapuram variety.",
+    "minimum_diameter_mm": 15.0,
+    "decay_max_percent": 2.0,
+    "sprout_max_percent": 0.0,
+    "double_split_max_percent": 3.0,
+    "defective_weight_limit_percent": 10.0,
+    "regulatory_note": "Specific export standard for Krishnapuram pungency and size profile.",
+    "grading_criteria": {
+      "configured": false,
+      "missing_requirements": [
+        "Official export tender Grade A vs URS specifications (NHB export standards define Class I / Class II, not Grade A/URS)",
+        "Physical diameter calibration in mm (required to certify minimum 15 mm diameter)",
+        "Weight-based defect percentage measurement"
+      ]
+    }
+  },
+  "procurement_trial": {
+    "id": "procurement_trial",
+    "name": "SIH Procurement Trial (Configurable Trial Profile)",
+    "type": "procurement_standard",
+    "description": "SIH demonstration profile. Configurable visual grading criteria for Grade A and URS classification based on surface defect absence and relative sizing.",
+    "decay_max_percent": 2.0,
+    "sprout_max_percent": 0.0,
+    "double_split_max_percent": 5.0,
+    "defective_limit_percent": 10.0,
+    "regulatory_note": "Trial visual grading criteria for procurement screening. Official NAFED/APMC acceptance requires certified scale weight and manual cut verification for internal decay.",
+    "grading_criteria": {
+      "configured": true,
+      "definition_source": "Configured trial rule in standards.json based on visual defect segregation and relative sizing; physical mm and weight criteria require calibration and scales.",
+      "grade_a": {
+        "label": "Grade A",
+        "description": "Sound bulbs free from any visible decay, sprouting, or splitting, with Medium or Large approximate size."
+      },
+      "urs": {
+        "label": "URS (Under Requisite Standard)",
+        "description": "Bulbs with minor structural defect (double_split) or Small approximate size, but free from rot and sprouting."
+      },
+      "defective": {
+        "label": "Defective / Reject",
+        "description": "Bulbs exhibiting visible surface rot, decay, or emergent vegetative sprouting."
+      },
+      "undersized": {
+        "label": "Undersized",
+        "description": "Bulbs falling into the Small approximate image-based size category."
+      }
+    }
+  }
+}
