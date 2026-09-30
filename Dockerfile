@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend ./backend
 COPY frontend ./frontend
-COPY model ./model
+COPY model ./model`r`nCOPY sample_images ./sample_images
 COPY run.py .
 
 EXPOSE 8000
